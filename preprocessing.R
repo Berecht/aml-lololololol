@@ -28,13 +28,13 @@ data.table::setnames(temp_weather,c("origin","dep_temp", "dep_dewp", "dep_humid"
                                     "dep_wind_speed", "dep_wind_gust", "dep_precip", "dep_pressure", 
                                     "dep_visib", "time_hour"))
 train2 <- merge(train,temp_weather,by.x = c("dep_date","origin"), by.y = c("time_hour","origin") ,all.x = TRUE)
-data.table::setnames(temp_weather,c("origin","arr_temp", "arr_dewp", "arr_humid", "arr_wind_dir", 
-                                    "arr_wind_speed", "arr_wind_gust", "arr_precip", "arr_pressure", 
-                                    "arr_visib", "time_hour"))
-train2 <- merge(train2,temp_weather, by.x = c("arr_date","dest"), by.y = c("time_hour","origin") ,all.x = TRUE)
+# data.table::setnames(temp_weather,c("origin","arr_temp", "arr_dewp", "arr_humid", "arr_wind_dir", 
+#                                     "arr_wind_speed", "arr_wind_gust", "arr_precip", "arr_pressure", 
+#                                     "arr_visib", "time_hour"))
+# train2 <- merge(train2,temp_weather, by.x = c("arr_date","dest"), by.y = c("time_hour","origin") ,all.x = TRUE)
 rm(temp_weather)
 
-temp_airports <- airports[,c("faa", "name", "lat", "lon", "alt", "tz", "dst", "tzone")
+temp_airports <- airports[,c("faa", "name", "lat", "lon", "alt", "tz", "dst", "tzone")]
 
 data.table::setnames(temp_airports,c("faa", "dep_name", "dep_lat", "dep_lon", "dep_alt", "dep_tz", "dep_dst", "dep_tzone"))
 train3 <- merge(train2,temp_airports, by.x = "origin", by.y = "faa" ,all.x = TRUE)
@@ -42,3 +42,4 @@ data.table::setnames(temp_airports,c("faa", "arr_name", "arr_lat", "arr_lon", "a
 train3 <- merge(train3,temp_airports, by.x = "dest", by.y = "faa" ,all.x = TRUE)
 
 write.csv(train3,"train_full.csv")
+
