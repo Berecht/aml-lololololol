@@ -1,12 +1,15 @@
-setwd("~/B/VU/2018-2019/AML/Kaggle")
+setwd("~/Desktop/all")
 
 library(data.table)
+library(swfscMisc)
 
 airports <- data.table::fread("airports.csv")
 sample_submission <- data.table::fread("sample_submission.csv")
 test <- data.table::fread("test.csv")
 train <- data.table::fread("train.csv")
 weather <- data.table::fread("weather.csv")
+
+train <- test
 
 weather$time_hour <- as.POSIXct(weather$time_hour, format = "%Y-%m-%d %H:%M:%S")
 
@@ -41,5 +44,9 @@ train3 <- merge(train2,temp_airports, by.x = "origin", by.y = "faa" ,all.x = TRU
 data.table::setnames(temp_airports,c("faa", "arr_name", "arr_lat", "arr_lon", "arr_alt", "arr_tz", "arr_dst", "arr_tzone"))
 train3 <- merge(train3,temp_airports, by.x = "dest", by.y = "faa" ,all.x = TRUE)
 
-write.csv(train3,"train_full.csv")
+bearing <- unname(bearing(train3$dep_lat, train3$dep_lon, train3$arr_lat, train3$arr_lon))
+train4 <- cbind(train3, initial_bearing = bearing[1:168203])
+train5 <- cbind(train4, headwind = abs(train4$dep_wind_dir - train4$initial_bearing))
+
+write.csv(train5,"../test_full.csv")
 
